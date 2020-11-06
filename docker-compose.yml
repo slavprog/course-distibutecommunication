@@ -2,6 +2,7 @@ version: '3'
 services:
   authors:
     build: ./authors
+    image: author
     ports:
       - "8091:8080"
     expose:
@@ -16,12 +17,16 @@ services:
     build: ./frontend
     ports:
       - "8093:8080"
+      - "8000:8000"
+    expose:
+      - "8080"
     depends_on:
       - authors
       - books
     links:
       - authors
-      - books
+      - books                  
+    command: java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000 -jar appfront.jar
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq
